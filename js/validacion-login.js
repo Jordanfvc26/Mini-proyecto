@@ -1,25 +1,27 @@
-const usuario = document.getElementById("user")
-const contrasenia = document.getElementById("password")
-const form = document.getElementById("form")
-const parrafo = document.getElementById("warnings")
+function obtenerListaUsuarios(){
+    var listaUsuarios = JSON.parse(localStorage.getItem('listaUsuariosLs'));
 
-form.addEventListener("submit", e=>{
-    e.preventDefault()
-    let warnings = ""
-    let entrar = false;
-    /*Inicializamos una varible para verificar que el campo usuario, sea un dominio de email*/
-    let verificaremail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    if(!verificaremail.test(usuario.value)){
-        warnings += `El usuario ingresado no tiene dominio de email, o no existe <br>`
-        entrar=true;
+    if(listaUsuarios == null){
+        listaUsuarios =
+        [
+            //id,  Nombre,   Apellido,   User(correo),    Contraseña,  rol
+            ['1', 'Jordan', 'Vera', 'jordan@gmail.com', '123', '1'],
+            ['2', 'Angie', 'Diaz', 'angie@gmail.com', '123', '2']
+        ]
     }
-    if(contrasenia.value.length <8){
-        warnings += `La contraseña no es válida <br>`
-        entrar=true;
-    }
+    return listaUsuarios;
+}
 
-    if(entrar){
-        parrafo.innerHTML = warnings
+function validarCredenciales(user, pass){
+    var listaUsuarios = obtenerListaUsuarios();
+    var acceso = false;
 
+    for(var i = 0; i < listaUsuarios.length; i++){
+        if(user == listaUsuarios[i][3] && pass == listaUsuarios[i][4]){
+            acceso = true;
+            sessionStorage.setItem('usuarioActivo', listaUsuarios[i][1] + ' ' + listaUsuarios[i][2]);
+            sessionStorage.setItem('rolUsuarioActivo', listaUsuarios[i][5]);
+        }
     }
-})
+    return acceso;
+}
